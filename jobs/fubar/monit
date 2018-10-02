@@ -1,0 +1,5 @@
+check process fubar
+  with pidfile /var/vcap/sys/run/fubar/fubar.pid
+  start program "/var/vcap/jobs/fubar/bin/fubar start"
+  stop  program "/var/vcap/jobs/fubar/bin/fubar stop"
+  group vcap

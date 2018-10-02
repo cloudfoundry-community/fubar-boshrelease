@@ -1,0 +1,32 @@
+---
+name: nginx
+packages:
+  - nginx
+
+templates:
+  bin/nginx:          bin/nginx
+  config/mime.types: config/mime.types
+  config/nginx.conf: config/nginx.conf
+  config/key.pem:    config/key.pem
+  config/cert.pem:   config/cert.pem
+
+consumes:
+  - name: backends
+    type: backends
+
+properties:
+  port:
+    description: Port non-encrypted traffic should listen on
+    default:     1234
+
+  worker_processes:
+    description: Number of nginx workers
+    default:     2
+
+  worker_connections:
+    description: Number of nginx connections per worker
+    default:     8192
+
+  keepalive_timeout:
+    description: Timeout for keep-alive connections
+    default:     75 20

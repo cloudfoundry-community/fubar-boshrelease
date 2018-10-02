@@ -1,0 +1,6 @@
+#!/bin/bash
+set -eu
+
+bosh create-release --force --timestamp-version --name "$USER-fubar"
+bosh upload-release --name "$USER-fubar"
+bosh deploy -d "$USER-fubar" <(spruce merge  manifests/fubar.yml)

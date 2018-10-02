@@ -1,0 +1,43 @@
+name: (( concat $USER "-fubar" ))
+
+instance_groups:
+  - name: proxy
+    instances: 1
+    azs:       [z1]
+    vm_type:   default
+    stemcell:  default
+    networks:
+      - name: default
+    jobs:
+      - name:    proxy
+        release: (( grab name ))
+
+  - name: fubar
+    instances: 2
+    azs:       [z1]
+    vm_type:   default
+    stemcell:  default
+    networks:
+      - name: default
+    jobs:
+      - name:    foobar
+        release: (( grab name ))
+        properties:
+          port: 8080
+
+
+update:
+  canaries: 0
+  max_in_flight: 1
+  serial: true
+  canary_watch_time: 1000-120000
+  update_watch_time: 1000-120000
+
+stemcells:
+  - alias: default
+    os: ubuntu-trusty
+    version: latest
+
+releases:
+  - name: (( grab name ))
+    version: latest
