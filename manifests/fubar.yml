@@ -1,4 +1,4 @@
-name: (( concat $USER "-fubar" ))
+name: (( echo "${USER}-fubar" ))
 
 instance_groups:
   - name: proxy
