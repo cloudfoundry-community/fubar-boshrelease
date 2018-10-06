@@ -1,0 +1,51 @@
+#!/bin/bash
+set -eu
+
+unset BOSH_DEPLOYMENT
+unset BOSH_CA_CERT
+unset BOSH_CLIENT
+unset BOSH_CLIENT_SECRET
+unset BOSH_GW_USERNAME
+unset BOSH_GW_PASSWORD
+unset BOSH_GW_HOST
+
+if [[ -z "$(command -v spruce)" ]]; then
+  echo "The FUBAR BOSH Release needs spruce."
+  echo "Consult the README.md for instructions for your given platform."
+  exit 1
+fi
+
+if [[ "$USER" == "root" || $USER == "vagrant" ]]; then
+  if [[ -s .who ]]; then
+    FUBAR_PREFIX=$(cat .who)
+  else
+    echo -n "What is your first name?  "
+    read FUBAR_PREFIX
+    if [[ -n "${FUBAR_PREFIX}" ]]; then
+      echo "${FUBAR_PREFIX}" > .who
+    else
+      echo "name not specified."
+      exit 1
+    fi
+  fi
+else
+  FUBAR_PREFIX=$USER
+fi
+
+if [[ -z "${BOSH_ENVIRONMENT:-}" ]]; then
+  echo "please set your BOSH_ENVIRONMENT variable by running:"
+  echo
+  echo "    export BOSH_ENVIRONMENT=..."
+  echo
+  echo "replacing '...' with the name of one of the following BOSH aliases:"
+  echo
+  bosh envs
+  exit 1
+fi
+
+export FUBAR_PREFIX
+echo "trying again as $FUBAR_PREFIX..."
+set +x
+bosh create-release --force --timestamp-version --name "$FUBAR_PREFIX-fubar"
+bosh upload-release --name "$FUBAR_PREFIX-fubar"
+bosh deploy -d "$FUBAR_PREFIX-fubar" <(spruce merge  manifests/fubar.yml)

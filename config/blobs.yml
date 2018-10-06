@@ -1,0 +1,13 @@
+---
+golang/go1.6.1.linux-amd64.tar.gz:
+  object_id: e6d0877a-a92b-4de4-9b09-396bbe2d188d
+  sha: c73492474dcc7a233772d27e948b74468d9f1849
+  size: 84824395
+nginx/nginx-1.8.0.tar.gz:
+  object_id: db02a0bc-0f98-4955-9c6a-ef6b1ca549d8
+  sha: 12bad312764feae50246685ab2e74512d1aa9b2f
+  size: 832104
+nginx/pcre-8.37.tar.gz:
+  object_id: 8fae97c2-f09d-4c4a-8544-6b62794abb2a
+  sha: 4a24a20c61347d8da4edc86d5475aaf70ac146bb
+  size: 2041593
