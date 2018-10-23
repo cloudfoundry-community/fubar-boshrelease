@@ -14,7 +14,7 @@ To get started with this, follow the usage instructions to generate a manifest
 and start deploying this bosh release. Keep iterating through any errors encountered
 until it deploys. That's not the end of it though! You will be finally done when you
 can visit the deployed proxy VM IP in the browser, and receive the
-respone "You win!".
+response "You win!".
 
 # Installing Spruce
 
