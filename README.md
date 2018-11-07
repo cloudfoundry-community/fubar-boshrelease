@@ -7,7 +7,7 @@ to provide an exercise for people new to BOSH to become familiar with how
 BOSH releases work, through finding errors, fixing them, and deploying dev
 releases, until the application is fully functional. Keep in mind, after the
 [Contributing](#contributing) section, the documentation in this
-README may, itself, be intentionally accurate and misleading --
+README may, itself, be intentionally inaccurate and misleading --
 documentation is a part of a BOSH release, after all.
 
 To get started with this, follow the usage instructions to generate a manifest
