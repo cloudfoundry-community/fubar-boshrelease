@@ -48,4 +48,4 @@ echo "trying again as $FUBAR_PREFIX..."
 set +x
 bosh create-release --force --timestamp-version --name "$FUBAR_PREFIX-fubar"
 bosh upload-release --name "$FUBAR_PREFIX-fubar"
-bosh deploy -d "$FUBAR_PREFIX-fubar" <(spruce merge  manifests/fubar.yml)
+bosh -n deploy -d "$FUBAR_PREFIX-fubar" <(spruce merge  manifests/fubar.yml)
