@@ -67,7 +67,7 @@ for deployment.
 Next, you would deploy:
 
 ```
-bosh deploy -d fubar $(spruce merge fubar.yml)
+bosh deploy -d fubar <(spruce merge fubar.yml)
 ```
 
 **INSTEAD**, we've got a handy script for you to run:
