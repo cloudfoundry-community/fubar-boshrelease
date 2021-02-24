@@ -4,11 +4,9 @@ packages:
   - nginx
 
 templates:
-  bin/nginx:          bin/nginx
+  bin/nginx:         bin/nginx
   config/mime.types: config/mime.types
   config/nginx.conf: config/nginx.conf
-  config/key.pem:    config/key.pem
-  config/cert.pem:   config/cert.pem
 
 consumes:
   - name: backends

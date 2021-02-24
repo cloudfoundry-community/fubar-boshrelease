@@ -19,20 +19,6 @@ case $1 in
 
     echo $$ > $PIDFILE
 
-    # if the properties contain sslproxy.ssl.key & sslproxy.ssl.cert
-    # the two files below will contain key & cert, then copy them to
-    # the certificates dir
-    if [[ -n $(cat $CONF_DIR/ssl_key) && -n $(cat $CONF_DIR/ssl_crt) ]]; then
-      cp $CONF_DIR/ssl_key $CERTS_DIR
-      cp $CONF_DIR/ssl_crt $CERTS_DIR
-    # otherwise, if the key or cert doesn't exist create new ones
-    elif [[ ! -f $CERTS_DIR/ssl_key || ! -f $CERTS_DIR/ssl_crt ]]; then
-      openssl req -nodes -new -newkey rsa:2048 -out $CERTS_DIR/ssl.csr \
-        -keyout $CERTS_DIR/ssl_key -subj '/O=Bosh/CN=*'
-      openssl x509 -req -days 3650 -in $CERTS_DIR/ssl.csr \
-        -signkey $CERTS_DIR/ssl_key -out $CERTS_DIR/ssl_crt
-    fi
-
     exec /var/vcap/packages/nginx/sbin/nginx -c $JOB_DIR/config/nginx.conf \
       >>$LOG_DIR/nginx.stdout.log 2>>$LOG_DIR/nginx.stderr.log
     ;;
@@ -45,6 +31,6 @@ case $1 in
     ;;
 
   *)
-    echo "Usage: nginx_ctl {start|stop}" ;;
+    echo "Usage: nginx {start|stop}" ;;
 esac
 exit 0
