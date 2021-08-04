@@ -1,0 +1,131 @@
+diff --git a/fubar.yml b/fubar.yml
+index 32179b5..47088e8 100644
+--- a/fubar.yml
++++ b/fubar.yml
+@@ -9,7 +9,7 @@ instance_groups:
+     networks:
+       - name: default
+     jobs:
+-      - name:    proxy
++      - name:    nginx
+         release: (( grab name ))
+ 
+   - name: fubar
+@@ -20,7 +20,7 @@ instance_groups:
+     networks:
+       - name: default
+     jobs:
+-      - name:    foobar
++      - name:    fubar
+         release: (( grab name ))
+         properties:
+           port: 8080
+diff --git a/jobs/fubar/spec b/jobs/fubar/spec
+index 6ae4d3d..b5f27f4 100644
+--- a/jobs/fubar/spec
++++ b/jobs/fubar/spec
+@@ -1,6 +1,7 @@
+ ---
+ name: fubar
+-packages: []
++packages:
++- fubar
+ 
+ templates:
+   bin/fubar: bin/fubar
+@@ -10,8 +11,8 @@ templates:
+   helpers/ctl_utils.sh: helpers/ctl_utils.sh
+ 
+ provides:
+-  - name: backend
+-    type: backend
++  - name: backends
++    type: backends
+     properties:
+       - port
+ 
+diff --git a/jobs/fubar/templates/bin/fubar b/jobs/fubar/templates/bin/fubar
+index 26f3a62..1fa0a7a 100644
+--- a/jobs/fubar/templates/bin/fubar
++++ b/jobs/fubar/templates/bin/fubar
+@@ -9,6 +9,7 @@ case $1 in
+     pid_guard $PIDFILE $JOB_NAME
+     echo $$ > $PIDFILE
+ 
++    export WORKING=yes
+     exec chpst -u vcap:vcap fubar
+     ;;
+ 
+diff --git a/jobs/nginx/spec b/jobs/nginx/spec
+index aecc2dc..adab86f 100644
+--- a/jobs/nginx/spec
++++ b/jobs/nginx/spec
+@@ -15,7 +15,7 @@ consumes:
+ properties:
+   port:
+     description: Port non-encrypted traffic should listen on
+-    default:     1234
++    default:     80
+ 
+   worker_processes:
+     description: Number of nginx workers
+diff --git a/jobs/nginx/templates/bin/nginx b/jobs/nginx/templates/bin/nginx
+index c48f5ef..fcff239 100644
+--- a/jobs/nginx/templates/bin/nginx
++++ b/jobs/nginx/templates/bin/nginx
+@@ -13,8 +13,6 @@ exec >>$LOG_DIR/nginx.log 2>&1
+ case $1 in
+ 
+   start)
+-    echo "Cowardly refusing to start up at line 16"
+-    exit 1
+     mkdir -p $RUN_DIR $LOG_DIR $CERTS_DIR
+ 
+     echo $$ > $PIDFILE
+diff --git a/jobs/nginx/templates/config/nginx.conf b/jobs/nginx/templates/config/nginx.conf
+index 84e88b7..24f28d5 100644
+--- a/jobs/nginx/templates/config/nginx.conf
++++ b/jobs/nginx/templates/config/nginx.conf
+@@ -38,7 +38,7 @@ http {
+ 
+   upstream fubar {
+ <% link('backends').instances.each do  |server| %>
+-  server <%= server.address %>:<%= link('backends').p("prot", 80) %>;
++  server <%= server.address %>:<%= link('backends').p("port", 80) %>;
+ <% end %>
+   }
+ 
+diff --git a/packages/fubar/spec b/packages/fubar/spec
+index 38d0687..14d9d04 100644
+--- a/packages/fubar/spec
++++ b/packages/fubar/spec
+@@ -1,5 +1,6 @@
+ ---
+ name: fubar
+-dependencies: []
++dependencies:
++- golang1.6
+ files:
+ - fubar/*.go
+diff --git a/packages/nginx/packaging b/packages/nginx/packaging
+index 3e0feb3..ffb4c13 100644
+--- a/packages/nginx/packaging
++++ b/packages/nginx/packaging
+@@ -8,7 +8,7 @@ tar xzvf nginx/nginx-1.8.0.tar.gz
+ 
+ echo "Building nginx..."
+ pushd nginx-1.8.0
+-  ./cfg \
++  ./configure \
+     --prefix=${BOSH_INSTALL_TARGET} \
+     --with-pcre=../pcre-8.37 \
+     --with-http_stub_status_module \
+diff --git a/packages/nginx/spec b/packages/nginx/spec
+index 0d37b6b..29efcc9 100644
+--- a/packages/nginx/spec
++++ b/packages/nginx/spec
+@@ -2,3 +2,4 @@
+ name: nginx
+ files:
+ - nginx/nginx-1.8.0.tar.gz
++- nginx/pcre-8.37.tar.gz
